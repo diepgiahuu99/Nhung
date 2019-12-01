@@ -4,7 +4,8 @@
 #include <Keypad.h>           
 #include <LiquidCrystal_I2C.h>
 #include <SoftwareSerial.h>
-
+#include <Servo.h>
+  
 //include definitions for The LED pins--------------------------------------//
 
 SoftwareSerial mySerial(12,13);      // pin #10 is IN from sensor (GREEN wire) and pin #9 is OUT from arduino (WHITE wire)
@@ -41,18 +42,21 @@ byte colPins[COLS] = {5,4,3,2};
 // Create the Keypad
 Keypad kpd = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
 
+Servo myServo;
 
 void setup()
 {
   // set the data rate for the sensor //Serial port
   finger.begin(57600);
-  
+  myServo.attach(10);
   lcd.begin();    // set up the LCD's number of columns and rows:
         // Prints a message to the LCD.
   startScreen(); 
+  myServo.write(0);
 }
 void loop()
 {
+ // myServo.write(0);
   readKeypad();                 // Handles the Keypad object and switch case to read the inputs and decides the output state and leds based on the input    
 } 
 
@@ -64,21 +68,27 @@ void readKeypad()
   {
     switch (key)
     {
-      case '0':                                 // Each case is a button that is pressed
+      case '0':  
+      {
+        // Each case is a button that is pressed
+      
         switch(menu)
         {                          // the value of "menu" determines the setting parameter and what each button does in that setting  
-          case '0':
-          break;
+          case 0:
+          {
+            break;
+          }
           default:
           {
             lcd.print('0');
             cursorColumn=cursorColumn+1;
             input[n]='0';
-            n=n+1;
-          }
-          break;
+            n=n+1;           
+            break;  
+          }                  
         }
         break;
+      }
    case '1':
     {
        switch(menu)
@@ -534,7 +544,9 @@ int doorlockCheck()
      lcd.clear();
      lcd.setCursor(0,0);
      lcd.print("Correct!"); 
-     delay(2000);
+     myServo.write(90);
+     delay(7500);
+     myServo.write(0);
      reset();
    }
    else
@@ -543,6 +555,7 @@ int doorlockCheck()
     lcd.clear();
     lcd.setCursor(0,0);
     lcd.print("Invalid pass !"); 
+    
     delay(2000); 
     reset();
     }  
@@ -632,9 +645,11 @@ int getFingerprintIDez()
   {
     lcd.clear();
     lcd.print("Found ID #"); lcd.print(finger.fingerID); 
-    lcd.setCursor(0,1);
+    lcd.setCursor(0,1);    
     lcd.print("Confidence "); lcd.print(finger.confidence);
-    delay(2000);
+    myServo.write(90);
+    delay(7500);
+    myServo.write(0);
     reset();
   }
   return finger.fingerID; 
