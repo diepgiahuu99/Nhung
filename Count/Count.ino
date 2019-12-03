@@ -14,12 +14,21 @@ Adafruit_Fingerprint finger = Adafruit_Fingerprint(&mySerial);
                             
 LiquidCrystal_I2C lcd(0x27,16,2); // initialize the LCD library with the numbers of the interface pins
 
-                            //initialize variables
 int cursorColumn = 0;       //this controls the cursor postition
 int menu = 0;               //this controls the menu settings 
+// menu 0:  Default screen
+// menu 1:  Selection for default screen
+// menu 2:  Login with Password
+// menu 3:  Login with fingerprint
+// menu 4:  Admin Method Screen 
+// menu 5:  Authenicating For Admin
+// menu 6:  Check the old password 
+// menu 7:  Add a fingerprint
+// menu 8:  Delete a fingerprint 
+// menu 9:  Input the new Password
 int n=0;                    // variable used to point to the bits in the keypad input array  
 
-char password[]={0,0,0,0}; //initializing an array called password with variables a,b,c,d that hold the password digits
+char password[]={'0','0','0','0'}; //initializing an array called password with variables a,b,c,d that hold the password digits
 char input[4];             // an array that will contain the digits that are input
 const byte ROWS = 4;       // Four rows
 const byte COLS = 4;       // Four columns
@@ -46,6 +55,7 @@ Servo myServo;
 
 void setup()
 {
+    Serial.begin(9600);
   // set the data rate for the sensor //Serial port
   finger.begin(57600);
   myServo.attach(10);
@@ -519,7 +529,14 @@ void askForSelectionInAuthenicationMenu()
   lcd.print("2 - Fingerprint");
 }
 boolean checkCode(char *a,char *b)
-{                   //The function to check whether the contents of the first parameter,an array, match the                                               //match the contents of the second parameter, also an array.
+{  
+  Serial.print("Pass");       
+  for(int i=0;i< 4 ;i++)
+  {
+    Serial.print(a[i]);
+  }
+  delay(1000);
+  //The function to check whether the contents of the first parameter,an array, match the                                               //match the contents of the second parameter, also an array.
   for(int p=0; p<4; p++) 
     if(a[p]!=b[p]) return false;
     return true;
@@ -538,6 +555,7 @@ int doorlockCheck()
 {
   if(n > 3)
   {
+   delay(1000);
    if(checkCode(password,input) == true)
    {
      delay(250);
