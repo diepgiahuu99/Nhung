@@ -19,7 +19,7 @@ int cursorColumn = 0;       //this controls the cursor postition
 int menu = 0;               //this controls the menu settings 
 int n=0;                    // variable used to point to the bits in the keypad input array  
 
-char password[]={0,0,0,0}; //initializing an array called password with variables a,b,c,d that hold the password digits
+char password[]={'0','0','0','0'}; //initializing an array called password with variables a,b,c,d that hold the password digits
 char input[4];             // an array that will contain the digits that are input
 const byte ROWS = 4;       // Four rows
 const byte COLS = 4;       // Four columns
@@ -521,8 +521,10 @@ void askForSelectionInAuthenicationMenu()
 boolean checkCode(char *a,char *b)
 {                   //The function to check whether the contents of the first parameter,an array, match the                                               //match the contents of the second parameter, also an array.
   for(int p=0; p<4; p++) 
+  {
     if(a[p]!=b[p]) return false;
-    return true;
+  }
+  return true;
 }
 
 int changeToNewCode(char *a, char *b)
